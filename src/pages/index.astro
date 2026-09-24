@@ -1,0 +1,155 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.lang || data.lang === 'fr');
+allPosts.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+const featuredPost = allPosts[0];
+const recentPosts = allPosts.slice(1, 7);
+---
+
+<Layout title="Estimer Ma Villa — Expertises Vénales & Valorisation Immobilière de Prestige" description="L'observatoire d'expertise indépendant de la valorisation de villas de luxe aux Antilles : baromètre des prix au mètre carré vue mer, expertises vénales, transactions off-market et audit technique.">
+  <!-- Hero Section Style Lexington Riflesso (Sleek Onyx / Champagne Gold / Architectural Lines) -->
+  <section class="relative bg-stone-950 text-white overflow-hidden border-b border-stone-800">
+    <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:32px_32px]"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-950/80 text-amber-300 border border-amber-800 mb-6">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            Baromètre Indépendant de la Valorisation de Propriétés d'Exception
+          </div>
+          
+          <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight font-sans">
+            La Précision de l'Expertise pour Vos <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-500">Villas de Prestige</span>
+          </h1>
+          
+          <p class="mt-6 text-lg sm:text-xl text-stone-300 max-w-2xl font-normal leading-relaxed">
+            Méthodologies d'évaluation des biens d'exception, valorisation des parcelles en front de mer, analyse des transactions confidentielles off-market et décote d'usure saline.
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-4 items-center">
+            <a href="#dossiers" class="px-6 py-3.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-sm tracking-wide transition-all shadow-lg shadow-amber-600/25">
+              Consulter les Critères de Valorisation &darr;
+            </a>
+            <a href="/blog/" class="px-6 py-3.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-white font-semibold text-sm border border-stone-700 transition-all">
+              Index des Publications &rarr;
+            </a>
+          </div>
+
+          <!-- Riflesso Valuation Metrics -->
+          <div class="mt-12 grid grid-cols-3 gap-6 pt-8 border-t border-stone-800">
+            <div>
+              <div class="text-2xl sm:text-3xl font-black text-amber-400 font-mono">+35% à +50%</div>
+              <div class="text-xs text-stone-400 mt-1">Prime Vue Mer & Accès Cale</div>
+            </div>
+            <div>
+              <div class="text-2xl sm:text-3xl font-black text-white font-mono">DVF & Off-Mkt</div>
+              <div class="text-xs text-stone-400 mt-1">Transactions Réelles Notariées</div>
+            </div>
+            <div>
+              <div class="text-2xl sm:text-3xl font-black text-amber-400 font-mono">100%</div>
+              <div class="text-xs text-stone-400 mt-1">Impartialité Collégiale</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Card -->
+        {featuredPost && (
+          <div class="lg:col-span-5">
+            <div class="bg-stone-900/90 border border-stone-800 rounded-3xl p-6 sm:p-8 relative shadow-2xl group hover:border-amber-500/40 transition-all backdrop-blur-sm">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-800/60">
+                  Étude de Marché à la Une
+                </span>
+                <span class="text-xs text-stone-400 font-mono">
+                  {new Date(featuredPost.data.pubDate).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' })}
+                </span>
+              </div>
+              <h2 class="text-2xl font-bold text-white group-hover:text-amber-300 transition-colors leading-snug">
+                <a href={`/blog/${featuredPost.id}/`}>{featuredPost.data.title}</a>
+              </h2>
+              {featuredPost.data.description && (
+                <p class="mt-3 text-stone-300 text-sm line-clamp-3 leading-relaxed">
+                  {featuredPost.data.description}
+                </p>
+              )}
+              <div class="mt-6 pt-6 border-t border-stone-800 flex items-center justify-between">
+                <span class="text-xs text-stone-400 font-medium">Domaine: <strong class="text-stone-200">{featuredPost.data.category}</strong></span>
+                <a href={`/blog/${featuredPost.id}/`} class="text-xs font-bold text-amber-400 group-hover:text-amber-300 flex items-center gap-1">
+                  Lire l'expertise &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- Bento Grid Section -->
+  <section id="dossiers" class="py-20 bg-stone-900/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">Méthodes d'Évaluation & Pratiques Vénale</h2>
+        <p class="text-3xl sm:text-4xl font-extrabold text-stone-900 dark:text-white">Les Clés d'une Valorisation Impartiale</p>
+        <p class="mt-3 text-base text-stone-600 dark:text-stone-400">Des repères chiffrés pour comprendre la valeur réelle des villas et propriétés d'architecte.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {recentPosts.map((post) => (
+          <article class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 hover:border-amber-500 transition-all flex flex-col justify-between group shadow-sm hover:shadow-xl">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                  {post.data.category || 'Expertise'}
+                </span>
+                <span class="text-xs text-stone-400">
+                  {new Date(post.data.pubDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-stone-900 dark:text-white group-hover:text-amber-400 transition-colors line-clamp-2 mb-2">
+                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h3>
+              {post.data.description && (
+                <p class="text-sm text-stone-600 dark:text-stone-400 line-clamp-3">
+                  {post.data.description}
+                </p>
+              )}
+            </div>
+            <div class="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between">
+              <span class="text-xs text-stone-500 dark:text-stone-400">Audit certifié</span>
+              <a href={`/blog/${post.id}/`} class="text-xs font-bold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+                Consulter &rarr;
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-12 text-center">
+        <a href="/blog/" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-stone-900 text-white dark:bg-white dark:text-stone-900 font-bold text-sm hover:bg-amber-600 dark:hover:bg-amber-400 transition-all shadow-md">
+          Consulter l'Ensemble des Études et Analyses de Valeur &rarr;
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- International Callout -->
+  <section class="py-12 border-t border-stone-800 bg-stone-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-4">International Editions / Ediciones Internacionales</p>
+      <div class="flex justify-center items-center gap-6 text-sm font-semibold">
+        <a href="/en/" class="text-amber-300 hover:underline flex items-center gap-1.5">
+          <span>🇬🇧</span> English Edition (Luxury Villa Valuation & Appraisal Benchmark)
+        </a>
+        <span class="text-stone-700">|</span>
+        <a href="/es/" class="text-amber-300 hover:underline flex items-center gap-1.5">
+          <span>🇪🇸</span> Edición en Español (Tasación de Villas de Lujo)
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
