@@ -1,37 +1,35 @@
-# Directives Éditoriales & Emplacements Publicitaires Obligatoires
+# Directives Éditoriales & Contraintes d'Environnement — estimer-ma-villa.com
 
-Ce document consigne les règles de monétisation et d'intégration publicitaire obligatoires pour chaque nouvel article créé sur **estimer-ma-villa.com**.
-
----
-
-## 1. Principe Général : Zéro ID en Dur
-
-La monétisation de ce site s'appuie sur le serveur autonome **Revive Adserver** (`https://ads.les4h.fr`, Éditeur ID `108`).
-Tous les identifiants de zones Revive attribués à **estimer-ma-villa.com** sont centralisés dans le fichier de configuration :
-👉 **`src/config/ads.config.ts`**
-
-> **Règle absolue** : Il est strictement interdit d'écrire des numéros de zone Revive (ex: `zoneId={655}`) directement dans les articles Markdown, les templates Astro ou les composants. Tout appel d'emplacement publicitaire doit obligatoirement se faire via son identifiant sémantique (`slot`).
+Ce document récapitule les directives d'environnement et de monétisation obligatoires pour toute création de nouvel article sur **estimer-ma-villa.com**.
 
 ---
 
-## 2. Emplacements Publicitaires Obligatoires par Article
+## 1. Contraintes d'Environnement du Domaine
 
-Pour chaque nouvel article (créé sous `src/content/blog/<slug>.md` ou via l'interface Keystatic CMS), les emplacements publicitaires suivants sont obligatoirement activés :
-
-| Emplacement (`slot`) | Format & Dimensions | Zone Revive Dédiée | Rôle & Positionnement |
-| :--- | :--- | :---: | :--- |
-| **`header`** | Leaderboard (728x90) | Zone 654 | Bannière haute injectée au-dessus ou sous le menu principal |
-| **`inContent`** | Medium Rectangle (300x250) | Zone 655 | Encart contextuel inséré au milieu de l'article |
-| **`largeRectangle`** | Large Rectangle (336x280) | Zone 653 | Encart de fin d'article inséré avant les articles recommandés |
-| **`mobileSticky`** | Mobile Banner (320x100) | Zone 656 | Bandeau collant ancré en bas d'écran sur smartphone |
-| **`halfPage`** | Half Page (300x600) | Zone 652 | Grand format pour colonne latérale (Sidebar desktop) |
-| **`skyscraper`** | Skyscraper (160x600) | Zone 657 | Format vertical pour listing et dossiers thématiques |
+| Ressource | Identifiant & Paramètres |
+| :--- | :--- |
+| **Domaine** | `estimer-ma-villa.com` |
+| **Tracker Analytics** | Matomo cookieless (`https://analytics.les4h.fr/`) |
+| **Conteneur MTM** | `container_mMunnISx.js` (Site ID: `106`) |
+| **Adserver Revive** | `https://ads.les4h.fr/` (Éditeur ID: `108`) |
+| **Config Ads Dédiée** | `src/config/ads.config.ts` |
 
 ---
 
-## 3. Code Obligatoire dans le Gabarit d'Article (`src/pages/blog/[...slug].astro`)
+## 2. Règle Impérative : Tracker + IDs Ads sur Tout Nouvel Article
 
-Le gabarit universel enveloppe le contenu Markdown de chaque article avec les balises suivantes :
+Pour chaque nouvel article rédigé dans `src/content/blog/` ou publié via l'interface Keystatic :
+
+### A. Tracker Matomo (Automatique via Layout)
+L'article doit impérativement être rendu par le gabarit `src/pages/blog/[...slug].astro` qui fait appel à `Layout.astro`.
+Ce Layout compile au build statique la balise MTM :
+```html
+<script type="text/javascript" src="https://analytics.les4h.fr/js/container_mMunnISx.js" async defer></script>
+```
+Ce tracker est 100% cookieless, garantissant une conformité CNIL immédiate sans pop-up de cookies.
+
+### B. Emplacements Publicitaires Dédiés (Zéro ID en Dur)
+L'article doit contenir les deux encarts publicitaires suivants, résolus via `src/config/ads.config.ts` :
 
 ```astro
 ---
@@ -43,12 +41,12 @@ import ReviveSlot from '../../components/ads/ReviveSlot.astro';
   <Content />
 </div>
 
-<!-- 1. Encart Pub In-Content Obligatoire (300x250) -->
+<!-- 1. Encart Pub In-Content Obligatoire (Medium Rectangle 300x250 - Zone 655) -->
 <div class="my-12 py-6 border-y border-stone-200/80 flex justify-center">
   <ReviveSlot slot="inContent" />
 </div>
 
-<!-- 2. Encart Pub Fin d'Article Obligatoire (336x280) -->
+<!-- 2. Encart Pub Fin d'Article Obligatoire (Large Rectangle 336x280 - Zone 653) -->
 <div class="my-8 p-4 bg-stone-50/60 rounded-2xl border border-stone-200/60 flex flex-col items-center justify-center text-center">
   <ReviveSlot slot="largeRectangle" />
 </div>
@@ -56,18 +54,21 @@ import ReviveSlot from '../../components/ads/ReviveSlot.astro';
 
 ---
 
-## 4. Insertion Manuelle dans un Article Long (> 1500 mots)
+## 3. Inventaire des Zones Revive du Domaine
 
-Si un article approfondi nécessite un encart publicitaire supplémentaire dans une sous-section :
-```astro
-<ReviveSlot slot="inContent" />
-```
-Pour un encart latéral desktop (Sidebar) :
-```astro
-<ReviveSlot slot="halfPage" />
-```
+| Emplacement (`slot`) | Format | Zone ID | Positionnement |
+| :--- | :--- | :---: | :--- |
+| **`header`** | Leaderboard (728x90) | **654** | Haut de page / sous navigation |
+| **`inContent`** | Medium Rectangle (300x250) | **655** | Milieu d'article contextuel |
+| **`largeRectangle`** | Large Rectangle (336x280) | **653** | Fin d'article avant recommandations |
+| **`mobileSticky`** | Mobile Banner (320x100) | **656** | Bandeau sticky bas d'écran mobile |
+| **`halfPage`** | Half Page (300x600) | **652** | Sidebar desktop pour articles longs |
+| **`skyscraper`** | Skyscraper (160x600) | **657** | Colonne latérale de listing / dossiers |
 
 ---
 
-## 5. Masquage Automatique (Auto-Collapse)
-Si aucune campagne active n'est planifiée dans Revive Adserver pour une zone donnée, le conteneur `.revive-slot-container` se replie automatiquement via l'écouteur d'événement Revive dans `Layout.astro`. Aucun encart vide ou message d'erreur n'apparaît aux lecteurs.
+## 4. Checklist Avant Publication
+- [ ] L'article utilise le Layout avec le tracker MTM actif (`mMunnISx`).
+- [ ] Les 2 encarts publicitaires (`slot="inContent"` et `slot="largeRectangle"`) sont présents.
+- [ ] Aucun numéro de zone n'est écrit en dur dans le Markdown ou le template.
+- [ ] L'URL interne de l'article se termine bien par un slash (`/blog/:slug/`).
